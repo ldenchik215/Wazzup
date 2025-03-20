@@ -1,0 +1,91 @@
+*, *:before, *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+:focus, :active {
+  outline: none;
+}
+
+a:focus, a:active {
+  outline: none;
+}
+
+html, body {
+  font-size: 100%;
+  line-height: 1;
+  font-size: 14px;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  margin: 0;
+}
+
+input, button, textarea {
+  font-family: inherit;
+}
+
+input::-ms-clear {
+  display: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+a, a:visited {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+ul li {
+  list-style: none;
+}
+
+/* ================================================== */
+
+.conteiner {
+  max-width: 920px;
+  padding: 10px;
+  margin: 0 auto;
+}
+
+.form {
+  display: flex;
+  gap: 30px;
+  margin: 0 auto;
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.img-preview {
+  width: 360px;
+  height: 500px;
+}
+
+.img-preview img {
+  width: 100%;
+  object-fit: cover;
+}
+
+button {
+  margin-top: 10px;
+}
+
+input, textarea {
+  padding: 5px;
+}
