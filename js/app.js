@@ -6,7 +6,7 @@ const sendStatus = document.querySelector('.status')
 
 inputImg.addEventListener('blur', (e) => {
   if (e.target.value.trim()) {
-    img.src = e.target.value.trim
+    img.src = e.target.value.trim()
   } else {
     img.src = './img/No-Image-Placeholder.svg'
   }
