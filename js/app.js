@@ -33,7 +33,7 @@ const delaySend = async (data) => {
       counterSend = 0
     }
 		send(data.phones[i], data.textMsg, data.fileMsg)
-		sendStatus.innerHTML = `Сообщений отправленно: ${i+1}` 
+		sendStatus.innerHTML = `Сообщений отправленно: ${i+1} из ${data.phones.length}` 
     counterSend++
 	}
 }
