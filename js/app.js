@@ -30,14 +30,25 @@ phoneList.addEventListener('input', (e) => {
 	e.target.value = e.target.value.replace(/\D+/g, '\n')
 })
 
-phoneList.addEventListener('blur',  (e) => {
+const phoneReplace = (e) => {
   phones = e.target.value.split('\n')
   e.target.value = phones.map(phone => {
-    const newPhone = phone.split('')
-    newPhone.splice(0, 1, 7)
-    return newPhone.join('')
+    if (phone[0] == '8') {
+      const newPhone = phone.split('')
+      newPhone.splice(0, 1, 7)
+      return newPhone.join('')
+    }
+
+    if (phone[0] != '7' && phone[0]) {
+      const newPhone = phone.split('')
+      newPhone.splice(0, 0, 7)
+      return newPhone.join('')
+    }
+    return phone
   }).join('\n')
-})
+}
+
+phoneList.addEventListener('blur', phoneReplace)
 
 btn.onclick = () => {
   getChannelId()
