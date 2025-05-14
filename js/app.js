@@ -26,8 +26,17 @@ inputImg.addEventListener('blur', (e) => {
   }
 })
 
-phoneList.addEventListener('input', function (e) {
-	this.value = this.value.replace(/\D+/g, '\n')	
+phoneList.addEventListener('input', (e) => {
+	e.target.value = e.target.value.replace(/\D+/g, '\n')
+})
+
+phoneList.addEventListener('blur',  (e) => {
+  phones = e.target.value.split('\n')
+  e.target.value = phones.map(phone => {
+    const newPhone = phone.split('')
+    newPhone.splice(0, 1, 7)
+    return newPhone.join('')
+  }).join('\n')
 })
 
 btn.onclick = () => {
