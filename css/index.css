@@ -74,13 +74,14 @@ ul li {
 
 .img-preview {
   width: 280px;
-  height: 500px;
+  height: 380px;
   overflow: hidden;
 }
 
 .img-preview img {
   width: 100%;
-  object-fit: cover;
+  height: 100%;
+  object-fit: contain;
 }
 
 button {
@@ -88,5 +89,9 @@ button {
 }
 
 input, textarea {
+  padding: 5px;
+}
+
+.input-channelId {
   padding: 5px;
 }

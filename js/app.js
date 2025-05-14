@@ -1,8 +1,22 @@
 const btn = document.getElementById('btn')
 const phoneList = document.querySelector('.phones')
 const inputImg = document.querySelector('.input-file')
+const inputApiKey = document.querySelector('.input-api-key')
+const selectChannelId = document.querySelector('.input-channelId')
 const img = document.querySelector('.img')
 const sendStatus = document.querySelector('.status')
+
+window.addEventListener('load', () => {
+  if (localStorage.getItem('apiKey')) {
+    inputApiKey.value = localStorage.getItem('apiKey')
+    fillChannelId()
+  }
+})
+
+inputApiKey.addEventListener('blur', (e) => {
+  localStorage.setItem('apiKey', e.target.value.trim())
+  fillChannelId()
+})
 
 inputImg.addEventListener('blur', (e) => {
   if (e.target.value.trim()) {
@@ -17,6 +31,7 @@ phoneList.addEventListener('input', function (e) {
 })
 
 btn.onclick = () => {
+  getChannelId()
 	const data = getDataForm()
 	console.log(data.phones);
 	console.log('Сообщение: \n' + data.textMsg);
@@ -80,14 +95,15 @@ function send(phone, text, file = '') {
 
 
 function sendFile(phone, file) {
+  const channelId = getChannelId()
 	return fetch("https://api.wazzup24.com/v3/message", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			"Authorization": `Bearer ${_apiKey}`,
+			"Authorization": `Bearer ${getApiKey()}`,
 		},
 		body: JSON.stringify({
-			channelId: _chanelId,
+			channelId: channelId,
 			chatId: String(phone),
 			chatType: "whatsapp",
 			contentUri: file
@@ -95,18 +111,65 @@ function sendFile(phone, file) {
 	})
 }
 
-function sendText(phone, message) {
+function sendText(phone, message) {  
+  const channelId = getChannelId()
+
 	return fetch("https://api.wazzup24.com/v3/message", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			"Authorization": `Bearer ${_apiKey}`,
+			"Authorization": `Bearer ${getApiKey()}`,
 		},
 		body: JSON.stringify({
-			channelId: _chanelId,
+			channelId: channelId,
 			chatId: String(phone),
 			chatType: "whatsapp",
 			text: message
 		}),
 	});
+}
+
+function fetchApi() {
+  return fetch('https://api.wazzup24.com/v3/channels', {
+    headers: {
+			"Content-Type": "application/json",
+			"Authorization": `Bearer ${getApiKey()}`,
+		}
+  })
+}
+
+function fillChannelId() {
+  
+  const createOptionElem = (value, text) => {
+    const optionElem = document.createElement('option')
+    optionElem.setAttribute('value', value)
+    optionElem.text = text
+    
+    return optionElem
+  }
+  selectChannelId.innerHTML = ''
+  selectChannelId.appendChild(createOptionElem('', '--Канал для отправки сообщений--'))
+
+  fetchApi()
+    .then(res => {
+      if (!getApiKey()) throw new Error('Пустое поле ApiKey')
+      if (res.status === 401) throw new Error('Неверный ApiKey')
+      if (res.ok) return res.json()
+    })
+    .then(data => {
+      data.forEach(channel => {
+        const optionElem = createOptionElem(channel.channelId, `${channel.transport} ${channel.plainId}`)
+        
+        selectChannelId.appendChild(optionElem)
+      })
+    })
+    .catch(error => console.log(error.message))
+}
+
+function getApiKey() {
+  return inputApiKey.value.trim()
+}
+
+function getChannelId() {
+  return selectChannelId.value
 }
