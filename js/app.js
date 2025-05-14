@@ -51,11 +51,13 @@ const phoneReplace = (e) => {
 phoneList.addEventListener('blur', phoneReplace)
 
 btn.onclick = () => {
-  getChannelId()
 	const data = getDataForm()
-	console.log(data.phones);
-	console.log('Сообщение: \n' + data.textMsg);
+	if (data.textMsg) {
+    console.log(data.phones)
+    console.log('Сообщение: \n' + data.textMsg)
+  } 
 
+  if ((!data.textMsg && !data.fileMsg) || !data.phones.length) return
   delaySend(data)
 }
 
@@ -92,32 +94,19 @@ const getDataForm = () => {
 function send(phone, text, file = '') {
 	if (file) {
 		sendFile(phone, file)
-			.then((res) => res.json())
-			.then((data) => {
-				console.log(`${phone} Файл отправлен`);
-				sendText(phone, text)
-				.then((res) => res.json())
-				.then((data) => {
-					console.log(`${phone} Текст отправлен`);
-				})
-			})
-			.catch((error) => {
-				console.error(`${phone} Ошибка отправки ${error}`)
+			.then(() => {
+				if (text) sendText(phone, text)
 			})
 	} else {
-		sendText(phone, text)
-				.then((res) => res.json())
-				.then((data) => {
-					console.log(`${phone} Текст отправлен`);
-				})
+		if (text) sendText(phone, text)
 	}
 }
 
 
 function sendFile(phone, file) {
   const channelId = getChannelId()
-	return fetch("https://api.wazzup24.com/v3/message", {
-		method: "POST",
+  const option = {
+    method: "POST",
 		headers: {
 			"Content-Type": "application/json",
 			"Authorization": `Bearer ${getApiKey()}`,
@@ -128,13 +117,22 @@ function sendFile(phone, file) {
 			chatType: "whatsapp",
 			contentUri: file
 		}),
-	})
+  }
+	return fetch("https://api.wazzup24.com/v3/message", option)
+    .then((res) => {
+      if (res.ok) return res.json()
+      throw new Error()
+    })
+    .then(() => console.log(`${phone} Файл отправлен`))
+    .catch((error) => {
+      console.error(`${phone} Ошибка отправки ${error}`)
+    })
 }
 
 function sendText(phone, message) {  
   const channelId = getChannelId()
 
-	return fetch("https://api.wazzup24.com/v3/message", {
+  const option = {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -146,7 +144,20 @@ function sendText(phone, message) {
 			chatType: "whatsapp",
 			text: message
 		}),
-	});
+	}
+
+	return fetch("https://api.wazzup24.com/v3/message", option)
+  .then((res) => {
+    if (res.ok) return res.json()
+    if (!channelId) throw new Error('Канал не выбран')
+    throw new Error()
+  })
+  .then(() => {
+    console.log(`${phone} Текст отправлен`);
+  })
+  .catch((error) => {
+    console.error(`${phone} Ошибка отправки ${error}`)
+  })
 }
 
 function fetchApi() {
@@ -168,8 +179,7 @@ function fillChannelId() {
     return optionElem
   }
   selectChannelId.innerHTML = ''
-  selectChannelId.appendChild(createOptionElem('', '--Канал для отправки сообщений--'))
-
+  
   fetchApi()
     .then(res => {
       if (!getApiKey()) throw new Error('Пустое поле ApiKey')
@@ -183,7 +193,10 @@ function fillChannelId() {
         selectChannelId.appendChild(optionElem)
       })
     })
-    .catch(error => console.log(error.message))
+    .catch(error =>{
+      console.log(error.message)
+      selectChannelId.appendChild(createOptionElem('', '-- Введите ApiKey, чтобы выбрать канал для отправки --'))
+    })
 }
 
 function getApiKey() {
@@ -191,5 +204,6 @@ function getApiKey() {
 }
 
 function getChannelId() {
+  if (!selectChannelId.value) console.log('Выбирите канал для отправки')
   return selectChannelId.value
 }
