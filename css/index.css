@@ -2,6 +2,7 @@
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
+  margin: 0;
 }
 
 :focus, :active {
@@ -55,7 +56,7 @@ ul li {
 /* ================================================== */
 
 .conteiner {
-  max-width: 920px;
+  max-width: 1200px;
   padding: 10px;
   margin: 0 auto;
 }
@@ -63,13 +64,15 @@ ul li {
 .form {
   display: flex;
   gap: 30px;
-  margin: 0 auto;
+  justify-content: center;
 }
 
 .input-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 15px;
+  flex: 1 1 40%;
+  max-width: 500px;
 }
 
 .img-preview {
@@ -84,14 +87,49 @@ ul li {
   object-fit: contain;
 }
 
-button {
-  margin-top: 10px;
+.btns {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: center;
 }
 
 input, textarea {
   padding: 5px;
 }
 
+.log-field {
+  flex: 1 1 60%;
+  background: #eeeeee;
+  padding: 5px;
+}
+
+.log-field * {
+  max-width: 512px;
+  margin: 5px 0px;
+}
+
+.log-field h4 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.phones {
+  flex-shrink: 0;
+  width: 140px;
+}
+
 .input-channelId {
   padding: 5px;
+}
+
+.error {
+  color: #da1f15;
+}
+
+@media (max-width: 900px) {
+  .img-preview {
+    width: 140px;
+    height: 190px;
+  }
 }

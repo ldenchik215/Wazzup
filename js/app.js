@@ -1,10 +1,12 @@
 const btn = document.getElementById('btn')
+const btnClear = document.getElementById('btnClear')
 const phoneList = document.querySelector('.phones')
 const inputImg = document.querySelector('.input-file')
 const inputApiKey = document.querySelector('.input-api-key')
 const selectChannelId = document.querySelector('.input-channelId')
 const img = document.querySelector('.img')
-const sendStatus = document.querySelector('.status')
+const sendStatus = document.querySelector('.status-text')
+const inputLog = document.querySelector('.log')
 
 window.addEventListener('load', () => {
   if (localStorage.getItem('apiKey')) {
@@ -50,15 +52,39 @@ const phoneReplace = (e) => {
 
 phoneList.addEventListener('blur', phoneReplace)
 
-btn.onclick = () => {
+btn.onclick = (e) => {
+  e.preventDefault()
+
 	const data = getDataForm()
-	if (data.textMsg) {
+
+  if (!inputApiKey.value) {
+    addToLog('p', 'Введите ApiKey из ЛК Wazzup', 'error')
+    return
+  }
+
+  if (!data.phones.length){
+    console.log('Введите номера телефонов для отправки')
+    addToLog('p', 'Введите номера телефонов для отправки', 'error')
+    return
+  }
+  
+  if (!data.textMsg && !data.fileMsg){
+    console.log('Введите текст сообщения или добавьте ссылку на файл')
+    addToLog('p', 'Введите текст сообщения или добавьте ссылку на файл', 'error')
+    return
+  }
+
+  if (data.textMsg) {
     console.log(data.phones)
     console.log('Сообщение: \n' + data.textMsg)
   } 
 
-  if ((!data.textMsg && !data.fileMsg) || !data.phones.length) return
   delaySend(data)
+}
+
+btnClear.onclick = (e) => {
+  e.preventDefault()
+  inputLog.innerHTML = ''
 }
 
 const delaySend = async (data) => {
@@ -121,11 +147,17 @@ function sendFile(phone, file) {
 	return fetch("https://api.wazzup24.com/v3/message", option)
     .then((res) => {
       if (res.ok) return res.json()
-      throw new Error()
+      if (res.status === 400) throw new Error('Введен не верный номер телефона')
+      if (res.status === 500) throw new Error('Ошибка в url ссылке на файл')
+      throw new Error('Ошибка отправки')
     })
-    .then(() => console.log(`${phone} Файл отправлен`))
+    .then(() => {
+      console.log(`${phone} Файл отправлен`)
+      addToLog('p', `${phone} Файл отправлен`)
+    })
     .catch((error) => {
-      console.error(`${phone} Ошибка отправки ${error}`)
+      console.error(`Ошибка отправки файла на ${phone} - ${error.message}`)
+      addToLog('p', `Ошибка отправки файла на ${phone} - ${error.message}`, 'error')
     })
 }
 
@@ -150,13 +182,16 @@ function sendText(phone, message) {
   .then((res) => {
     if (res.ok) return res.json()
     if (!channelId) throw new Error('Канал не выбран')
-    throw new Error()
+    if (res.status === 400) throw new Error('Введен не верный номер телефона')
+    throw new Error('Ошибка отправки')
   })
   .then(() => {
-    console.log(`${phone} Текст отправлен`);
+    console.log(`${phone} Текст отправлен`)
+    addToLog('p', `${phone} Текст отправлен`)
   })
   .catch((error) => {
-    console.error(`${phone} Ошибка отправки ${error}`)
+    console.error(`Ошибка отправки текста на ${phone} - ${error.message}`)
+    addToLog('p', `Ошибка отправки текста на ${phone} - ${error.message}`, 'error')
   })
 }
 
@@ -206,4 +241,12 @@ function getApiKey() {
 function getChannelId() {
   if (!selectChannelId.value) console.log('Выбирите канал для отправки')
   return selectChannelId.value
+}
+
+function addToLog(tag, text, className) {
+  el = document.createElement(tag)
+  el.textContent = text
+  el.classList.add(className)
+
+  inputLog.appendChild(el)
 }

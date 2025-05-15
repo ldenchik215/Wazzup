@@ -11,7 +11,7 @@
 <body>
   <div class="conteiner">
     <form action="" class="form">
-      <textarea class="phones" placeholder="Номера телефонов формата 7999234432" type="text" rows="50" cols="33"
+      <textarea class="phones" placeholder="Номера телефонов формата 7999234432" type="text" rows="50"
         style="resize: none;"></textarea>
       <div class="input-wrapper">
         <input class="input-api-key" type="text" placeholder="ApiKey из лк Wazzup">
@@ -23,12 +23,19 @@
         <div class="img-preview">
           <img class="img" src="./img/No-Image-Placeholder.svg" alt="preview">
         </div>
-        <textarea class="textMsg" placeholder="Текст сообщения" type="text" rows="15" cols="80"
-          style="resize: none;"></textarea>
-        <div class="status">Сообщений отправленно: </div>
+        <textarea class="textMsg" placeholder="Текст сообщения" type="text" rows="15" style="resize: none;"></textarea>
+        <div class="status-text">Сообщений отправленно:</div>
+        <div class="btns">
+          <button id="btn">Отправить</button>
+          <button id="btnClear">Очистить лог</button>
+        </div>
+      </div>
+      <div class="log-field">
+        <h4>Тут будет отображаться процесс отправки сообщений:</h4>
+        <div class="log"></div>
       </div>
     </form>
-    <button id="btn">Отправить</button>
+
   </div>
 
   <script src="./js/app.js"></script>
