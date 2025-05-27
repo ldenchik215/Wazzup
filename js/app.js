@@ -7,6 +7,7 @@ const selectChannelId = document.querySelector('.input-channelId')
 const img = document.querySelector('.img')
 const sendStatus = document.querySelector('.status-text')
 const inputLog = document.querySelector('.log')
+const inputMsg = document.querySelector('.textMsg')
 
 window.addEventListener('load', () => {
   if (localStorage.getItem('apiKey')) {
@@ -33,7 +34,7 @@ phoneList.addEventListener('input', (e) => {
 })
 
 const phoneReplace = (e) => {
-  phones = e.target.value.split('\n')
+  const phones = e.target.value.split('\n')
   e.target.value = phones.map(phone => {
     if (phone[0] == '8') {
       const newPhone = phone.split('')
@@ -95,15 +96,13 @@ const delaySend = async (data) => {
       await new Promise(resolve => setTimeout(resolve, 180000))
       counterSend = 0
     }
-		send(data.phones[i], data.textMsg, data.fileMsg)
+		await send(data.phones[i], data.textMsg, data.fileMsg)
 		sendStatus.innerHTML = `Сообщений отправленно: ${i+1} из ${data.phones.length}` 
     counterSend++
 	}
 }
 
-const getDataForm = () => {
-	const textMsg = document.querySelector('.textMsg').value
-	const fileMsg = document.querySelector('.input-file').value
+function getDataForm() {
 	const phones = phoneList.value.split('\n')
 	
 	if (!phones[phones.length - 1]) phones.pop()
@@ -111,8 +110,8 @@ const getDataForm = () => {
 	if (!phones[0]) phones.shift()
 
 	return {
-		textMsg: textMsg,
-    fileMsg: fileMsg,
+		textMsg: inputMsg.value,
+    fileMsg: inputImg.value,
 		phones: phones
 	}
 }
@@ -244,7 +243,7 @@ function getChannelId() {
 }
 
 function addToLog(tag, text, className) {
-  el = document.createElement(tag)
+  const el = document.createElement(tag)
   el.textContent = text
   el.classList.add(className)
 
