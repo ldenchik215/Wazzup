@@ -102,6 +102,9 @@ input, textarea {
   flex: 1 1 60%;
   background: #eeeeee;
   padding: 5px;
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
 }
 
 .log-field * {
@@ -114,9 +117,15 @@ input, textarea {
   margin-bottom: 10px;
 }
 
+.log {
+  overflow-y: scroll;
+  flex-grow: 1;
+}
+
 .phones {
   flex-shrink: 0;
   width: 140px;
+  height: 90vh;
 }
 
 .input-channelId {
