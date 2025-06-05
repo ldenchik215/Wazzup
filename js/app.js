@@ -94,17 +94,11 @@ btnClear.onclick = (e) => {
 }
 
 const delaySend = async (data) => {
-  let counterSend = 0
 
   for (let i = 0; i < data.phones.length; i++) {
-    if (counterSend >= 48) {
-      await new Promise(resolve => setTimeout(resolve, 180000))
-      counterSend = 0
-    }
 		await send(data.phones[i], data.textMsg, data.fileMsg)
 		sendStatus.innerHTML = `Сообщений отправленно: ${i+1} из ${data.phones.length}`
-    await new Promise(resolve => setTimeout(resolve, 10000))
-    counterSend++
+    await new Promise(resolve => setTimeout(resolve, 5000))
 	}
 }
 
@@ -249,9 +243,19 @@ function getChannelId() {
 }
 
 function addToLog(tag, text, className) {
+  const date = new Date()
   const el = document.createElement(tag)
-  el.textContent = text
+  
+  el.textContent = `${timeFormat(date)} ${text}`
   el.classList.add(className)
 
   inputLog.appendChild(el)
+}
+
+function timeFormat(date) {
+  const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
+  const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+  const seconds = date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds()
+
+  return `${hours}:${minutes}:${seconds}`
 }
