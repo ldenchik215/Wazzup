@@ -33,6 +33,11 @@ phoneList.addEventListener('input', (e) => {
 	e.target.value = e.target.value.replace(/\D+/g, '\n')
 })
 
+phoneList.addEventListener('blur', () => {
+  const phoneCount = phoneList.value.trim() ? phoneList.value.trim().split('\n').length : 0
+	sendStatus.innerHTML = `Сообщений отправленно: 0 из ${phoneCount}`
+})
+
 const phoneReplace = (e) => {
   const phones = e.target.value.split('\n')
   e.target.value = phones.map(phone => {
@@ -97,7 +102,8 @@ const delaySend = async (data) => {
       counterSend = 0
     }
 		await send(data.phones[i], data.textMsg, data.fileMsg)
-		sendStatus.innerHTML = `Сообщений отправленно: ${i+1} из ${data.phones.length}` 
+		sendStatus.innerHTML = `Сообщений отправленно: ${i+1} из ${data.phones.length}`
+    await new Promise(resolve => setTimeout(resolve, 10000))
     counterSend++
 	}
 }

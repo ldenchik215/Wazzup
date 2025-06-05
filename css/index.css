@@ -108,7 +108,7 @@ input, textarea {
 }
 
 .log-field * {
-  max-width: 512px;
+  min-width: 512px;
   margin: 5px 0px;
 }
 
